@@ -1,10 +1,7 @@
 # encoding:utf-8
-"""
-author: sixseven
-topic: 爬取裁判文书网
-date: 2018-04-17
-contact: 2557692481@qq.com
-"""
+'''
+获得API数据
+'''
 import requests
 from urllib import parse
 import execjs
