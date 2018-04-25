@@ -6,11 +6,6 @@ import requests
 from urllib import parse
 import execjs
 import json
-import io
-import sys
-
-sys.stdout = io.TextIOWrapper(
-    sys.stdout.buffer, encoding='gb18030')  # 改变标准输出的默认编码
 
 
 class GetAPI(object):

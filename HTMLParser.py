@@ -15,8 +15,8 @@ class HtmlParser(object):
         p = re.compile(r'jsonHtmlData =(.*?)}";')
         target = eval(json.loads(p.findall(source)[0] + '}"'))
 
-        self.item['title'] = target['Title']		# 标题
-        self.item['pubdate'] = target['PubDate']		# 发布时间
+        self.item['title'] = target['Title'].strip()		# 标题
+        self.item['pubdate'] = target['PubDate'].strip()		# 发布时间
         html = target['Html']
         # 提取正文
         soup = BeautifulSoup(html, 'lxml')
@@ -28,15 +28,16 @@ class HtmlParser(object):
             except TypeError:
                 continue
         self.item['article'] = article.strip()  # 正文
+        return self.item
 
 
 def test():
-	with open('test.txt') as f:
+    with open('test.txt') as f:
         source = f.read()
     s = HtmlParser()
     s.parse(source)
     print(s.item)
 
-    
+
 if __name__ == '__main__':
     test()
