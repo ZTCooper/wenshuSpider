@@ -124,7 +124,7 @@ class GetAPI(object):
         return req2.text
 
 
-if __name__ == '__main__':
+def test():
     Param = "全文检索:*"  # 搜索关键字
     Index = 1  # 第几页
     Page = 20  # 每页几条
@@ -134,3 +134,7 @@ if __name__ == '__main__':
     result = s.get_data(Param, Index, Page, Order, Direction)
     with open('result.txt', 'w') as f:
         f.write(result)
+
+
+if __name__ == '__main__':
+    test()

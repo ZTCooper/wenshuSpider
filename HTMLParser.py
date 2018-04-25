@@ -30,9 +30,13 @@ class HtmlParser(object):
         self.item['article'] = article.strip()  # 正文
 
 
-if __name__ == '__main__':
-    with open('test.txt') as f:
+def test():
+	with open('test.txt') as f:
         source = f.read()
     s = HtmlParser()
     s.parse(source)
     print(s.item)
+
+    
+if __name__ == '__main__':
+    test()

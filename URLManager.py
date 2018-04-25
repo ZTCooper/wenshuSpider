@@ -23,7 +23,10 @@ class UrlManager(object):
                 "http://wenshu.court.gov.cn/CreateContentJS/CreateContentJS.aspx?DocID=" + id)
 
 
-if __name__ == '__main__':
-    s = UrlManager()
+def test():
+	s = UrlManager()
     s.add_new_urls()
     print(s.urls)
+
+if __name__ == '__main__':
+    test()
