@@ -9,7 +9,7 @@
 [SpiderMan.py](https://github.com/ZTCooper/wenshuSpider/blob/master/SpiderMan.py)（爬虫调度器）		爬虫入口 <br><br>
 
 ```python SpiderMan.py``` 运行爬虫  
-确保数据库中已有 *wenshu* 数据库（若没有：```CREATE DATABSE wenshu;```）   
+确保数据库中已有 *wenshu* 数据库（若没有：```CREATE DATABASE wenshu;```）   
 DataOutput中设置数据库用户名，密码  
   
 
