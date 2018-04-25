@@ -6,6 +6,7 @@ import pymysql
 
 
 class DataOutput(object):
+    # 初始化时连接到MySQL
     def __init__(self):
         self.datas = list()
         self.conn = pymysql.connect(host='127.0.0.1', port=3306,
@@ -17,7 +18,7 @@ class DataOutput(object):
             return
         self.datas.append(data)
 
-    # 连接到MySQL，创建表
+    # 创建表
     def create_table(self):
         if not self.cur.execute("SHOW TABLES LIKE 'Info'"):		# 检查表是否已存在
             self.cur.execute(

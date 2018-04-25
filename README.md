@@ -1,4 +1,6 @@
 # wenshuSpider
+  
+![](https://img.shields.io/badge/requests-2.18.4-green.svg) ![](https://img.shields.io/badge/PyExecJS-1.5.1-green.svg) ![](https://img.shields.io/badge/beautifulsoup4-4.6.0-green.svg) ![](https://img.shields.io/badge/pymysql-0.7.9-green.svg)  
 中国裁判文书网爬虫 —— http://wenshu.court.gov.cn
 
 [GetAPI.py](https://github.com/ZTCooper/wenshuSpider/blob/master/GetAPI.py)		得到接口数据 <br>
