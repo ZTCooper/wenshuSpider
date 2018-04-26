@@ -10,7 +10,7 @@ class DataOutput(object):
     def __init__(self):
         self.datas = list()
         self.conn = pymysql.connect(host='127.0.0.1', port=3306,
-                                    user='root', password='', db='wenshu', charset='utf8')
+                                    user='root', password='', db='wenshu', charset='gbk')
         self.cur = self.conn.cursor()
 
     def data_store(self, data):
@@ -22,7 +22,7 @@ class DataOutput(object):
     def create_table(self):
         if not self.cur.execute("SHOW TABLES LIKE 'Info'"):		# 检查表是否已存在
             self.cur.execute(
-                'CREATE TABLE Info (title VARCHAR(50) NOT NULL, pubdate VARCHAR(20) NOT NULL, article TEXT NOT NULL);')
+                'CREATE TABLE Info (title VARCHAR(255) NOT NULL, pubdate VARCHAR(20) NOT NULL, article TEXT NOT NULL);')
 
     # 插入数据
     def insert_into_db(self, data):

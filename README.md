@@ -1,6 +1,7 @@
 # wenshuSpider
   
-![](https://img.shields.io/badge/requests-2.18.4-green.svg) ![](https://img.shields.io/badge/PyExecJS-1.5.1-green.svg) ![](https://img.shields.io/badge/beautifulsoup4-4.6.0-green.svg) ![](https://img.shields.io/badge/pymysql-0.7.9-green.svg)  
+![](https://img.shields.io/badge/requests-2.18.4-green.svg) ![](https://img.shields.io/badge/PyExecJS-1.5.1-green.svg) ![](https://img.shields.io/badge/beautifulsoup4-4.6.0-green.svg) ![](https://img.shields.io/badge/pymysql-0.7.9-green.svg)    
+  
 中国裁判文书网爬虫 —— http://wenshu.court.gov.cn
 
 [GetAPI.py](https://github.com/ZTCooper/wenshuSpider/blob/master/GetAPI.py)		得到接口数据 <br>
@@ -10,11 +11,12 @@
 [DataOutput.py](https://github.com/ZTCooper/wenshuSpider/blob/master/DataOutput.py)（数据存储器）存入MySQL <br>
 [SpiderMan.py](https://github.com/ZTCooper/wenshuSpider/blob/master/SpiderMan.py)（爬虫调度器）		爬虫入口 <br><br>
 
-```python SpiderMan.py``` 运行爬虫  
-确保数据库中已有 *wenshu* 数据库（若没有：```CREATE DATABASE wenshu;```）   
+`python SpiderMan.py` 运行爬虫  
+确保数据库中已有 *wenshu* 数据库（若没有：`CREATE DATABASE wenshu;`）   
 DataOutput中设置数据库用户名，密码  
   
 
-部分数据报错 *"Data too long for column 'title' at row 1"*
+部分数据报错 *"Data too long for column 'title' at row 1"*  
+解决方法：创建表时 `charset='gbk'`
   
 还没写完！！！
