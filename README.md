@@ -4,19 +4,21 @@
   
 中国裁判文书网爬虫 —— http://wenshu.court.gov.cn
 
-[GetAPI.py](https://github.com/ZTCooper/wenshuSpider/blob/master/GetAPI.py)		得到接口数据 <br>
+[GetAPI.py](https://github.com/ZTCooper/wenshuSpider/blob/master/GetAPI.py)		获取接口数据（感谢[sixs](https://github.com/sixs/wenshu_spider)分享参数解密方法） <br>
 [URLManager.py](https://github.com/ZTCooper/wenshuSpider/blob/master/URLManager.py)（URL管理器）		从接口数据提取DocID构造url <br>
-[HTMLDownloader.py](https://github.com/ZTCooper/wenshuSpider/blob/master/HTMLDownloader.py)（HTML下载器） <br>
+[HTMLDownloader.py](https://github.com/ZTCooper/wenshuSpider/blob/master/HTMLDownloader.py)（网页下载器） <br>
 [HTMLParser.py](https://github.com/ZTCooper/wenshuSpider/blob/master/HTMLParser.py)（HTML解析器）		解析JSON数据和HTML <br>
 [DataOutput.py](https://github.com/ZTCooper/wenshuSpider/blob/master/DataOutput.py)（数据存储器）存入MySQL <br>
 [SpiderMan.py](https://github.com/ZTCooper/wenshuSpider/blob/master/SpiderMan.py)（爬虫调度器）		爬虫入口 <br><br>
 
-`python SpiderMan.py` 运行爬虫  
-确保数据库中已有 *wenshu* 数据库（若没有：`CREATE DATABASE wenshu;`）   
-DataOutput中设置数据库用户名，密码  
   
+* 确保数据库中已有 *wenshu* 数据库（若没有：`CREATE DATABASE wenshu;`）   
+* DataOutput中设置数据库用户名，密码  
+* settings.py 中Index设置爬取页数 及相关设置  
+* `python SpiderMan.py` 运行爬虫  
+<br>
 
-部分数据报错 *"Data too long for column 'title' at row 1"*  
-解决方法：创建表时 `charset='gbk'`
-  
-还没写完！！！
+##### 04/26/2018
+* 修复部分数据报错 *"Data too long for column 'title' at row 1"*  （连接数据库时 `charset='gbk'`）
+* 部分提取改用正则表达式，速度更快
+* 增量式，利用数据库存储文书ID，构造url时去重

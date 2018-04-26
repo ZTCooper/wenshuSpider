@@ -4,7 +4,7 @@
 '''
 from bs4 import BeautifulSoup
 import re
-import json
+# import json
 
 
 class HtmlParser(object):
@@ -12,12 +12,15 @@ class HtmlParser(object):
         self.item = dict()
 
     def parse(self, source):
-        p = re.compile(r'jsonHtmlData =(.*?)}";')
-        target = eval(json.loads(p.findall(source)[0] + '}"'))
+        p_docid = re.compile(r'"文书ID"\:"(.*?)"')
+        p_title = re.compile(r'"Title\\":\\"(.*?)\\"')
+        p_pubdate = re.compile(r'"PubDate\\":\\"(.*?)\\"')
+        p_html = re.compile(r'"Html\\":\\"(.*?)\\"')
 
-        self.item['title'] = target['Title'].strip()		# 标题
-        self.item['pubdate'] = target['PubDate'].strip()		# 发布时间
-        html = target['Html']
+        self.item['docid'] = p_docid.findall(source)    # 文书ID
+        self.item['title'] = p_title.findall(source)        # 标题
+        self.item['pubdate'] = p_pubdate.findall(source)        # 发布时间
+        html = p_html.findall(source)[0]
         # 提取正文
         soup = BeautifulSoup(html, 'lxml')
         divs = soup.find_all('div')

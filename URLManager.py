@@ -2,9 +2,11 @@
 '''
 通过DocID构造接口链接
 '''
-import json
+# import json
+import re
 from GetAPI import GetAPI
 from settings import Settings
+from DataOutput import DataOutput
 
 
 class UrlManager(object):
@@ -15,17 +17,22 @@ class UrlManager(object):
     def get_DocID(self):
         docids = list()
         s = Settings()
-        Param, Index, Page, Order, Direction = s.get_all()
-        data = GetAPI().get_data(Param, Index, Page, Order, Direction)
-        for i in range(1, Page + 1):
-            docids.append(eval(json.loads(data))[i]["文书ID"])
+        Param, Indexs, Page, Order, Direction = s.get_all()
+        p_docid = re.compile(r'"文书ID\\":\\"(.*?)\\"')
+        for Index in range(1, Indexs + 1):
+            data = GetAPI().get_data(Param, Index, Page, Order, Direction)
+            docids.extend(p_docid.findall(data))
         return docids
 
     def add_new_urls(self):
+        db = DataOutput()
+        old_docids = db.get_old_docids()
+        db.close_cursor()
         docids = self.get_DocID()
-        for id in docids:
-            self.new_urls.add(
-                "http://wenshu.court.gov.cn/CreateContentJS/CreateContentJS.aspx?DocID=" + id)
+        for docid in docids:
+            if docid not in old_docids:     # 去重
+                self.new_urls.add(
+                    "http://wenshu.court.gov.cn/CreateContentJS/CreateContentJS.aspx?DocID=" + docid)
 
     def get_new_url(self):
         new_url = self.new_urls.pop()

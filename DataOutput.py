@@ -20,20 +20,31 @@ class DataOutput(object):
 
     # 创建表
     def create_table(self):
-        if not self.cur.execute("SHOW TABLES LIKE 'Info'"):		# 检查表是否已存在
+        if not self.cur.execute("SHOW TABLES LIKE 'Info'"):     # 检查表是否已存在
             self.cur.execute(
-                'CREATE TABLE Info (title VARCHAR(255) NOT NULL, pubdate VARCHAR(20) NOT NULL, article TEXT NOT NULL);')
+                'CREATE TABLE Info (docid VARCHAR(50) NOT NULL PRIMARY KEY, title VARCHAR(255) NOT NULL, pubdate VARCHAR(20) NOT NULL, article TEXT NOT NULL);')
+
+    # 获取docid以检查是否已访问过
+    def get_old_docids(self):
+        self.cur.execute('SELECT docid FROM info;')
+        docids = self.cur.fetchall()
+        return [docid[0] for docid in docids]
 
     # 插入数据
     def insert_into_db(self, data):
         try:
-            self.cur.execute('INSERT INTO Info(title, pubdate, article) VALUES (%s, %s, %s)',
-                             (data['title'], data['pubdate'], data['article']))
+            self.cur.execute('INSERT INTO Info(docid, title, pubdate, article) VALUES (%s, %s, %s, %s)',
+                             (data['docid'], data['title'], data['pubdate'], data['article']))
         except Exception as e:
             print("Something goes wrong with database.")
             print(e)
+        '''
+        except pymysql.err.IntegrityError:
+            print("已存在")
+        '''
         self.conn.commit()
 
+    # 关闭数据库连接
     def close_cursor(self):
         self.cur.close()
         self.conn.close()
