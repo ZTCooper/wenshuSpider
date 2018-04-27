@@ -20,7 +20,7 @@ class UrlManager(object):
         Param, Indexs, Page, Order, Direction = s.get_all()
         p_docid = re.compile(r'"文书ID\\":\\"(.*?)\\"')
         print("获取url中……")
-        for Index in range(1, Indexs + 1):
+        for Index in range(Indexs[0], Indexs[1]):
             data = GetAPI().get_data(Param, Index, Page, Order, Direction)
             docids.extend(p_docid.findall(data))
         return docids

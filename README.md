@@ -14,7 +14,7 @@
   
 * 确保数据库中已有 *wenshu* 数据库（若没有：`CREATE DATABASE wenshu;`）   
 * DataOutput中设置数据库用户名，密码  
-* settings.py 中Index设置爬取页数 及相关设置  
+* settings.py 中Index设置爬取页数及相关设置（Index = [m, n]表示爬取m到(n-1)页）  
 * `python SpiderMan.py` 运行爬虫  <br><br>
 (因为要先从获取docid构造url，所以爬虫启动时间较长……)
 <br>
@@ -25,4 +25,5 @@
 * 增量式，利用数据库存储文书ID，构造url时去重  
   
 ##### 04/27.2018
-* 修复查重时数据表不存在的错误  
+* 修复查重时数据表不存在的错误
+* 修改爬取页数的设置方式  
