@@ -32,13 +32,19 @@ class DataOutput(object):
 
     # 插入数据
     def insert_into_db(self, data):
+        erros = 0
+        erros_messages = set()
         try:
             self.cur.execute('INSERT INTO Info(docid, title, pubdate, article) VALUES (%s, %s, %s, %s)',
                              (data['docid'], data['title'], data['pubdate'], data['article']))
         except Exception as e:
+            erros += 1
+            erros_messages.add(e)
+        return erros, erros_messages
+        '''
             print("Something goes wrong with database.")
             print(e)
-        '''
+        
         except pymysql.err.IntegrityError:
             print("已存在")
         '''
