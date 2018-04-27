@@ -16,8 +16,8 @@ class SpiderMan(object):
         self.output = DataOutput()  # 实例化时连接到数据库
 
     def crawl(self):
+        self.output.create_table()      # 创建表
         self.manager.add_new_urls()		# 创建url
-        self.output.create_table()		# 创建表
         while (self.manager.new_urls_size()):
             url = self.manager.get_new_url()
             html = self.downloader.download(url)

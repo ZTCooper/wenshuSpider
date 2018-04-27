@@ -6,11 +6,11 @@ import pymysql
 
 
 class DataOutput(object):
-    # 初始化时连接到MySQL
+    # 实例化时连接到MySQL
     def __init__(self):
         self.datas = list()
         self.conn = pymysql.connect(host='127.0.0.1', port=3306,
-                                    user='root', password='', db='wenshu', charset='gbk')
+                                    user='root', password='123456', db='wenshu', charset='gbk')
         self.cur = self.conn.cursor()
 
     def data_store(self, data):

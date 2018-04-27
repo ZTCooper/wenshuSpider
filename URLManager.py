@@ -19,20 +19,22 @@ class UrlManager(object):
         s = Settings()
         Param, Indexs, Page, Order, Direction = s.get_all()
         p_docid = re.compile(r'"文书ID\\":\\"(.*?)\\"')
+        print("获取url中……")
         for Index in range(1, Indexs + 1):
             data = GetAPI().get_data(Param, Index, Page, Order, Direction)
             docids.extend(p_docid.findall(data))
         return docids
 
     def add_new_urls(self):
+        docids = self.get_DocID()
         db = DataOutput()
         old_docids = db.get_old_docids()
         db.close_cursor()
-        docids = self.get_DocID()
         for docid in docids:
             if docid not in old_docids:     # 去重
                 self.new_urls.add(
                     "http://wenshu.court.gov.cn/CreateContentJS/CreateContentJS.aspx?DocID=" + docid)
+        print("url构造完成，准备开始爬取……")
 
     def get_new_url(self):
         new_url = self.new_urls.pop()

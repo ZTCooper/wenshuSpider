@@ -1,6 +1,6 @@
 # wenshuSpider
   
-![](https://img.shields.io/badge/requests-2.18.4-green.svg) ![](https://img.shields.io/badge/PyExecJS-1.5.1-green.svg) ![](https://img.shields.io/badge/beautifulsoup4-4.6.0-green.svg) ![](https://img.shields.io/badge/pymysql-0.7.9-green.svg)    
+![](https://img.shields.io/badge/Python-3.6.3-blue.svg) ![](https://img.shields.io/badge/requests-2.18.4-green.svg) ![](https://img.shields.io/badge/PyExecJS-1.5.1-green.svg) ![](https://img.shields.io/badge/beautifulsoup4-4.6.0-green.svg) ![](https://img.shields.io/badge/pymysql-0.7.9-green.svg)    
   
 中国裁判文书网爬虫 —— http://wenshu.court.gov.cn
 
@@ -15,10 +15,14 @@
 * 确保数据库中已有 *wenshu* 数据库（若没有：`CREATE DATABASE wenshu;`）   
 * DataOutput中设置数据库用户名，密码  
 * settings.py 中Index设置爬取页数 及相关设置  
-* `python SpiderMan.py` 运行爬虫  
+* `python SpiderMan.py` 运行爬虫  <br><br>
+(因为要先从获取docid构造url，所以爬虫启动时间较长……)
 <br>
 
 ##### 04/26/2018
 * 修复部分数据报错 *"Data too long for column 'title' at row 1"*  （连接数据库时 `charset='gbk'`）
 * 部分提取改用正则表达式，速度更快
-* 增量式，利用数据库存储文书ID，构造url时去重
+* 增量式，利用数据库存储文书ID，构造url时去重  
+  
+##### 04/27.2018
+* 修复查重时数据表不存在的错误  
