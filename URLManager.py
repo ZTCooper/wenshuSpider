@@ -5,49 +5,47 @@
 # import json
 import re
 from GetAPI import GetAPI
-from settings import Settings
 from DataOutput import DataOutput
 
 
 class UrlManager(object):
     def __init__(self):
-        self.new_urls = set()  # 未爬取
-        self.old_urls = set()  # 已爬取
+        self.urls = set()  # 未爬取
+        # self.old_urls = set()  # 已爬取
 
-    def get_DocID(self):
-        docids = list()
-        s = Settings()
-        Param, Indexs, Page, Order, Direction = s.get_all()
+    def get_DocID(self, Index):
         p_docid = re.compile(r'"文书ID\\":\\"(.*?)\\"')
         print("获取url中……")
-        for Index in range(Indexs[0], Indexs[1]):
-            data = GetAPI().get_data(Param, Index, Page, Order, Direction)
-            docids.extend(p_docid.findall(data))
-        return docids
+        data = GetAPI().get_data(Index)
+        return p_docid.findall(data)
 
-    def add_new_urls(self):
-        docids = self.get_DocID()
-        db = DataOutput()
-        old_docids = db.get_old_docids()
-        db.close_cursor()
+    def add_urls(self, Index, db):
+        docids = self.get_DocID(Index)
+        duplicates = 0
         for docid in docids:
-            if docid not in old_docids:     # 去重
-                self.new_urls.add(
+            if not db.check_duplicates(docid):     # 查重
+                self.urls.add(
                     "http://wenshu.court.gov.cn/CreateContentJS/CreateContentJS.aspx?DocID=" + docid)
+            else:
+                duplicates += 1
         print("url构造完成，准备开始爬取……")
+        return duplicates
 
-    def get_new_url(self):
-        new_url = self.new_urls.pop()
-        self.old_urls.add(new_url)
-        return new_url
+    def get_urls(self):
+        urls = self.urls.copy()     # 浅拷贝
+        self.urls.clear()
+        return urls
 
-    def new_urls_size(self):
-        return len(self.new_urls)
+
+'''
+    def urls_size(self):
+        return len(self.urls)
 
     def old_urls_size(self):
         return len(self.old_urls)
+'''
 
-
+'''
 def test():
     s = UrlManager()
     s.add_new_urls()
@@ -56,3 +54,4 @@ def test():
 
 if __name__ == '__main__':
     test()
+'''

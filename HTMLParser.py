@@ -34,6 +34,7 @@ class HtmlParser(object):
         return self.item
 
 
+'''
 def test():
     with open('test.txt') as f:
         source = f.read()
@@ -44,3 +45,4 @@ def test():
 
 if __name__ == '__main__':
     test()
+'''

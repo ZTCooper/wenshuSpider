@@ -6,11 +6,13 @@ import requests
 from urllib import parse
 import execjs
 import json
+from settings import Settings
 
 
 class GetAPI(object):
     def __init__(self):
         self.session = requests.Session()
+        self.s = Settings().setting
 
     def get_guid(self):
         # 获取guid参数
@@ -85,7 +87,11 @@ class GetAPI(object):
         vl5x = (ctx2.call('vl5x', vjkl5))
         return vl5x
 
-    def get_data(self, Param, Index, Page, Order, Direction):
+    def get_data(self, Index):
+        Param = self.s["Param"]
+        Page = self.s["Page"]
+        Order = self.s["Order"]
+        Direction = self.s["Direction"]
         guid = self.get_guid()
         number = self.get_number(guid)
         vjkl5 = self.get_vjkl5(guid, number, Param)
@@ -119,6 +125,7 @@ class GetAPI(object):
         return req2.text
 
 
+'''
 def test():
     Param = "全文检索:*"  # 搜索关键字
     Index = 1  # 第几页
@@ -133,3 +140,4 @@ def test():
 
 if __name__ == '__main__':
     test()
+'''

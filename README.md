@@ -15,8 +15,8 @@
 * 确保数据库中已有 *wenshu* 数据库（若没有：`CREATE DATABASE wenshu;`）   
 * DataOutput中设置数据库用户名，密码  
 * settings.py 中Index设置爬取页数及相关设置（Index = [m, n]表示爬取m到(n-1)页）  
+  Page(每页条数) 只可设置为 5, 10, 15 或 20
 * `python SpiderMan.py` 运行爬虫  <br><br>
-(因为要先从获取docid构造url，所以爬虫启动时间较长……)
 <br>
 
 ##### 04/26/2018

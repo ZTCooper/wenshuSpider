@@ -24,31 +24,21 @@ class DataOutput(object):
             self.cur.execute(
                 'CREATE TABLE Info (docid VARCHAR(50) NOT NULL PRIMARY KEY, title VARCHAR(255) NOT NULL, pubdate VARCHAR(20) NOT NULL, article TEXT NOT NULL);')
 
-    # 获取docid以检查是否已访问过
-    def get_old_docids(self):
-        self.cur.execute('SELECT docid FROM info;')
-        docids = self.cur.fetchall()
-        return [docid[0] for docid in docids]
+    # 查重
+    def check_duplicates(self, id):
+        self.cur.execute('SELECT COUNT(*) FROM info WHERE docid = "%s";' % id)
+        return self.cur.fetchone()[0]
 
     # 插入数据
     def insert_into_db(self, data):
-        erros = 0
-        erros_messages = set()
+        errors = 0
         try:
             self.cur.execute('INSERT INTO Info(docid, title, pubdate, article) VALUES (%s, %s, %s, %s)',
-                             (data['docid'], data['title'], data['pubdate'], data['article']))
+                            (data['docid'], data['title'], data['pubdate'], data['article']))
         except Exception as e:
-            erros += 1
-            erros_messages.add(e)
-        return erros, erros_messages
-        '''
-            print("Something goes wrong with database.")
-            print(e)
-        
-        except pymysql.err.IntegrityError:
-            print("已存在")
-        '''
+            errors += 1
         self.conn.commit()
+        return errors
 
     # 关闭数据库连接
     def close_cursor(self):
@@ -56,6 +46,7 @@ class DataOutput(object):
         self.conn.close()
 
 
+'''
 def test():
     s = DataOutput()
     item = {'title': '2', 'pubdate': '1', 'article': '0'}
@@ -64,3 +55,4 @@ def test():
 
 if __name__ == '__main__':
     test()
+'''
