@@ -1,5 +1,9 @@
 # encoding:utf-8
 '''
+author: ztcooper
+contact: 1060214139@qq.com
+LICENSE: MIT
+
 解析页面，得到数据
 '''
 from bs4 import BeautifulSoup

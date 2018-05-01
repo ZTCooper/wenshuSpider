@@ -1,5 +1,9 @@
 # encoding:utf-8
 '''
+author: ztcooper
+contact: 1060214139@qq.com
+LICENSE: MIT
+
 爬虫调度器（入口）
 '''
 from URLManager import UrlManager
@@ -24,23 +28,25 @@ class SpiderMan(object):
         total_data = total_page * self.s["Page"]
         total_errors = 0
         total_duplicates = 0
+        old_total = self.output.get_total()
 
         for Index in range(self.s["Index"][0], self.s["Index"][1]):
             duplicates = self.manager.add_urls(Index, self.output)
             urls = self.manager.get_urls()
             bar = pyprind.ProgBar(
-                self.s["Page"] - duplicates, title="Crawling......")   # 进度条
+                self.s["Page"] - duplicates, title="Crawling " + "Page " + str(Index) + " ......")   # 进度条
             for url in urls:
-                bar.update()
-                html = self.downloader.download(url)
-                data = self.parser.parse(html)
-                errors = self.output.insert_into_db(data)        # 插入数据库
-            total_duplicates += duplicates
-            total_errors += errors
+                try:
+                    bar.update()
+                    html = self.downloader.download(url)
+                    data = self.parser.parse(html)
+                    self.output.insert_into_db(data)        # 插入数据库
+                except Exception:
+                    continue
+        new_total = self.output.get_total()
         self.output.close_cursor()  # 关闭数据库连接
 
-        print("本次爬取", total_data - total_duplicates - total_errors, "条")
-
+        print("本次爬取", new_total - old_total, "条")
 
 
 if __name__ == '__main__':

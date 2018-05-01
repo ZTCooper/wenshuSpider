@@ -1,5 +1,9 @@
 # encoding:utf-8
 '''
+author: ztcooper
+contact: 1060214139@qq.com
+LICENSE: MIT
+
 数据存储
 '''
 import pymysql
@@ -29,16 +33,19 @@ class DataOutput(object):
         self.cur.execute('SELECT COUNT(*) FROM info WHERE docid = "%s";' % id)
         return self.cur.fetchone()[0]
 
+    # 获得数据量
+    def get_total(self):
+        self.cur.execute('SELECT COUNT(*) FROM info')
+        return self.cur.fetchone()[0]
+
     # 插入数据
     def insert_into_db(self, data):
-        errors = 0
         try:
             self.cur.execute('INSERT INTO Info(docid, title, pubdate, article) VALUES (%s, %s, %s, %s)',
-                            (data['docid'], data['title'], data['pubdate'], data['article']))
+                             (data['docid'], data['title'], data['pubdate'], data['article']))
         except Exception as e:
-            errors += 1
+            pass
         self.conn.commit()
-        return errors
 
     # 关闭数据库连接
     def close_cursor(self):

@@ -1,5 +1,9 @@
 # encoding:utf-8
 '''
+author: ztcooper
+contact: 1060214139@qq.com
+LICENSE: MIT
+
 通过DocID构造接口链接
 '''
 # import json

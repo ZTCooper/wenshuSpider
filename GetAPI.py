@@ -1,11 +1,21 @@
 # encoding:utf-8
 '''
+author: sixseven
+topic: 爬取裁判文书网
+date: 2018-04-17
+contact: 2557692481@qq.com
+
+modified: ztcooper
+2018-04-24
+cotact: 1060214139@qq.com
+
 获得API数据
 '''
 import requests
 from urllib import parse
 import execjs
 import json
+from random import choice
 from settings import Settings
 
 
@@ -13,6 +23,7 @@ class GetAPI(object):
     def __init__(self):
         self.session = requests.Session()
         self.s = Settings().setting
+        self.u = Settings().user_agents
 
     def get_guid(self):
         # 获取guid参数
@@ -40,7 +51,7 @@ class GetAPI(object):
             'Origin': 'http://wenshu.court.gov.cn',
             'Referer': 'http://wenshu.court.gov.cn/',
             'X-Requested-With': 'XMLHttpRequest',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36'
+            'User-Agent': choice(self.u),
         }
         req1 = self.session.post(codeUrl, data=data, headers=headers)
         number = req1.text
@@ -59,7 +70,7 @@ class GetAPI(object):
             "Host": "wenshu.court.gov.cn",
             "Proxy-Connection": "keep-alive",
             "Upgrade-Insecure-Requests": "1",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36"
+            "User-Agent": choice(self.u),
         }
         req1 = self.session.get(url=url1, headers=headers1, timeout=10)
         try:
@@ -108,7 +119,7 @@ class GetAPI(object):
             "Origin": "http://wenshu.court.gov.cn",
             "Proxy-Connection": "keep-alive",
             # "Referer":Referer1,
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36",
+            "User-Agent": choice(self.u),
             "X-Requested-With": "XMLHttpRequest"
         }
         data = {
