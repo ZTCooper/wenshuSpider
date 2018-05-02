@@ -7,6 +7,7 @@ LICENSE: MIT
 下载页面
 url = http://wenshu.court.gov.cn/CreateContentJS/CreateContentJS.aspx?DocID=" + id
 '''
+
 import requests
 from random import choice
 from settings import Settings
@@ -20,7 +21,10 @@ class HtmlDownloader(object):
         headers = {
             'User-Agent': choice(self.u),
         }
-        r = requests.get(url, headers=headers)
-        if r.status_code == 200:
-            return r.text
+        try:
+            r = requests.get(url, headers=headers, timeout=10)
+            if r.status_code == 200:    # 访问正常
+                return r.text
+        except ReadTimeoutError:
+            raise TimeoutError
         return None

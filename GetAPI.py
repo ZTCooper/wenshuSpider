@@ -11,10 +11,10 @@ cotact: 1060214139@qq.com
 
 获得API数据
 '''
+
 import requests
 from urllib import parse
 import execjs
-# import json
 from random import choice
 from settings import Settings
 
@@ -136,21 +136,3 @@ class GetAPI(object):
         }
         req2 = self.session.post(url=url2, headers=headers2, params=data)
         return req2.text
-
-
-'''
-def test():
-    Param = "全文检索:*"  # 搜索关键字
-    Index = 1  # 第几页
-    Page = 20  # 每页几条
-    Order = "法院层级"  # 排序标准
-    Direction = "asc"  # asc正序 desc倒序
-    s = GetAPI()
-    result = s.get_data(Param, Index, Page, Order, Direction)
-    with open('result.txt', 'w') as f:
-        f.write(result)
-
-
-if __name__ == '__main__':
-    test()
-'''
