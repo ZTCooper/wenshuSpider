@@ -14,7 +14,7 @@ cotact: 1060214139@qq.com
 import requests
 from urllib import parse
 import execjs
-import json
+# import json
 from random import choice
 from settings import Settings
 
@@ -23,6 +23,7 @@ class GetAPI(object):
     def __init__(self):
         self.session = requests.Session()
         self.s = Settings().setting
+        self.sc = Settings().shortcut
         self.u = Settings().user_agents
 
     def get_guid(self):
@@ -59,8 +60,9 @@ class GetAPI(object):
 
     def get_vjkl5(self, guid, number, Param):
         # 获取cookie中的vjkl5
+        shortcut = self.sc["%s" % Param.split(":")[0]] 
         url1 = "http://wenshu.court.gov.cn/list/list/?sorttype=1&number=" + number + \
-            "&guid=" + guid + "&conditions=searchWord+QWJS+++" + \
+            "&guid=" + guid + "&conditions=searchWord+" + shortcut + "++" + \
             parse.quote(Param)
         Referer1 = url1
         headers1 = {

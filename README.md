@@ -5,7 +5,26 @@
   
 中国裁判文书网——http://wenshu.court.gov.cn  
   
+  
+使用说明
+-------------------------
+* DataOutput中设置数据库用户名，密码 
+* 确保数据库中已有 *wenshu* 数据库（若没有：`CREATE DATABASE wenshu;`）   
+* settings.py 中及相关设置  
+* `python SpiderMan.py` 运行爬虫  <br>
 
+特别说明
+-------------------
+关于**settings.py**的设置：
+* Param: 搜索关键字。默认为"全文检索:\*"，可设置为"案件类型:\*"， "文书类型:\*"等等，星号可替换为具体关键字，具体参考文书网首页 高级检索 栏。
+* Index：爬取页数。Index = [m, n]表示爬取m到(n-1)页。
+* Page：每页条数。只可设置为 5, 10, 15 或 20。
+* Order：排序标准。可设置为"法院层级"，"裁判日期" 或 "审判程序"。
+* Direction: 升序降序。"asc"正序，"desc"倒序。**如设置"Order": "裁判日期"， "Direction": "desc"可爬取最新文书**。
+<br>
+
+代码简单说明
+-------------
 [GetAPI.py](https://github.com/ZTCooper/wenshuSpider/blob/master/GetAPI.py)		获取接口数据（感谢[sixs](https://github.com/sixs/wenshu_spider)分享参数解密方法） <br>
 [URLManager.py](https://github.com/ZTCooper/wenshuSpider/blob/master/URLManager.py)（URL管理器）		从接口数据提取DocID构造url（构造过程略慢……QAQ） <br>
 [HTMLDownloader.py](https://github.com/ZTCooper/wenshuSpider/blob/master/HTMLDownloader.py)（网页下载器） <br>
@@ -13,18 +32,14 @@
 [DataOutput.py](https://github.com/ZTCooper/wenshuSpider/blob/master/DataOutput.py)（数据存储器）存入MySQL <br>
 [SpiderMan.py](https://github.com/ZTCooper/wenshuSpider/blob/master/SpiderMan.py)（爬虫调度器）		爬虫入口 <br><br>
 
-  
-使用说明
--------------------------
-* DataOutput中设置数据库用户名，密码 
-* 确保数据库中已有 *wenshu* 数据库（若没有：`CREATE DATABASE wenshu;`）   
-* settings.py 中Index设置爬取页数及相关设置（Index = [m, n]表示爬取m到(n-1)页）  
-  Page(每页条数) 只可设置为 5, 10, 15 或 20
-* `python SpiderMan.py` 运行爬虫  <br><br>
+To do
+-----------
+* 每个搜索条件下只能爬取到100页，100以后访问接口返回数据为空。浏览器手动翻到26页提示“返回结果过多，推荐精准检索后查询”。
 
 Let me know
 -------------------------
-在运行中出现问题请通过 *Issues* 告诉我，或通过 email 联系我 XD  <br><br>
+在运行中出现问题或有好的提议请通过 *Issues* 告诉我，或通过 qq(1060214139)， email 联系我。 XD<br>
+创建本项目主要为学习交流，技术不成熟，希望在学习的过程中完善，请多多指教。  <br><br>
 
 Update Log
 --------------------------

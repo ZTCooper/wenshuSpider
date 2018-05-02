@@ -12,10 +12,26 @@ class Settings(object):
     def __init__(self):
         self.setting = {
             "Param": "全文检索:*",  # 搜索关键字
-            "Index": [1, 3],  # 爬取页数
+            "Index": [1, 2],  # 爬取页数
             "Page": 20,  # 每页几条
-            "Order": "法院层级",  # 排序标准
-            "Direction": "asc",  # asc正序 desc倒序
+            "Order": "裁判日期",  # 排序标准
+            "Direction": "desc",  # asc正序 desc倒序
+        }
+
+        self.shortcut = {
+            "全文检索": "QWJS",
+            "案件名称": "AJMC",
+            "法院名称": "FYMC",
+            "案件类型": "AJLX",
+            "文书类型": "WSLX",
+            "审判人员": "SPRY",
+            "律所": "LS",
+            "案由": "AY",
+            "案号": "AH",
+            "法院层级": "FYCJ",
+            "审判程序": "SPCX",
+            "当事人": "DSR",
+            "律师": "LAWYER",
         }
 
         self.user_agents = [
