@@ -21,66 +21,49 @@ manager = UrlManager()
 downloader = HtmlDownloader()
 parser = HtmlParser()
 db = DataOutput()  # 实例化时连接到数据库
+db.create_table()      # 创建表
 s = Settings().setting
+old_total = db.get_total()
 max_threads = 3
 lock = threading.Lock()
 base_url = "http://wenshu.court.gov.cn/CreateContentJS/CreateContentJS.aspx?DocID="
 
 
-def crawl(Index):
-    db.create_table()      # 创建表
+def crawl():
     old_total = db.get_total()
-    manager.add_docids(Index, db)
-
-    def has_unvisited_id():
-        return manager.get_docid(db)
-
-    def go():
-        docid = has_unvisited_id()
+    def run(Index):
+        # 一个列表页的url存入数据库(默认为status为0)并加入urls set
         lock.acquire()
-        if docid:
+        manager.store_docids(Index, db)
+        docids = manager.get_urls()
+        for docid in docids:
             url = base_url + docid
-            print(url)
             try:
                 html = downloader.download(url)
                 data = parser.parse(html)
                 db.insert_into_db(data, docid)        # 插入数据库
             except TimeoutError:
                 db.change_status(docid, -1)
-            new_total = db.get_total()
-            if (new_total - old_total) and (new_total - old_total) % 20 == 0:
-                print("新增", new_total - old_total, "条")
         lock.release()
+        new_total = db.get_total()
+        print("新增", new_total - old_total, "条")
+        old_total = new_total
 
     threads = []    # 线程队列
-    while threads or has_unvisited_id():
+    Index = s["Index"][0]
+    while threads or Index <= s["Index"][1]:
         for thread in threads:
             if not thread.is_alive():   # 线程不可用
                 threads.remove(thread)  # 从线程队列中删掉
-        while len(threads) < max_threads:
-            thread = threading.Thread(target=go)    # 创建线程
+        while len(threads) < max_threads and Index <= s["Index"][1]:
+            thread = threading.Thread(target=run, args=(Index, ))    # 创建线程
             thread.setDaemon(True)  # 设置守护线程
             thread.start()  # 启动线程
+            print("thread start")
             time.sleep(1)
             threads.append(thread)  # 加入线程队列
-        time.sleep(1)
-
-
-def process_crawler():
-    process = []    # 进程队列
-    cpu_nums = multiprocessing.cpu_count()
-    print("将会启动进程数为：", cpu_nums)
-    Index = s["Index"][0]
-    while len(process) < cpu_nums and Index <= s["Index"][1]:
-        p = multiprocessing.Process(target=crawl, args=(Index,))   # 创建进程
-        p.start()   # 启动进程
-        print("process starts")
-        process.append(p)   # 加入进程队列
-        Index += 1
-    for p in process:
-        p.join()    # 等待进程队列中进程结束
-    db.close_cursor()  # 关闭数据库连接
+            Index += 1
 
 
 if __name__ == '__main__':
-    process_crawler()
+    crawl()
