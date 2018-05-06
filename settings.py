@@ -12,7 +12,7 @@ class Settings(object):
     def __init__(self):
         self.setting = {
             "Param": "法院地域:",  # 按地域爬取
-            "Index": [1, 1],  # 爬取页数
+            "Index": [1, 100],  # 爬取页数
             "Page": 20,  # 每页几条
             "Order": ["裁判日期", "裁判日期", "审判程序"],  # 排序标准
             "Direction": ["desc", "asc"],  # asc正序 desc倒序

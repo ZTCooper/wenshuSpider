@@ -46,26 +46,12 @@ def crawl():
     print('新增', new_total - old_total, '条')
 
 
-'''
-    threads = []    # 线程队列
-    while threads or db.has_unvisited():
-        for thread in threads:
-            if not thread.is_alive():   # 线程不可用
-                threads.remove(thread)  # 从线程队列中删掉
-        while len(threads) < max_threads and db.has_unvisited():
-            thread = threading.Thread(target=run, args=(manager.get_one_docid(db),))    # 创建线程
-            thread.setDaemon(True)  # 设置守护线程
-            thread.start()  # 启动线程
-            threads.append(thread)  # 加入线程队列
-            time.sleep(random())
-'''
-
 # 将需要爬取的docid存入数据库
 def store_ids():
-    Page = s["Page"]
-    for region in s["regions"]:
-        for Order in s["Order"]:
-            for Direction in s["Direction"]:
+    Page = s["Page"]    # 每页20条
+    for region in s["regions"]:     # 每个地域
+        for Order in s["Order"]:    # 排序标准
+            for Direction in s["Direction"]:    # 升降序各深入100页
                 Param = s["Param"] + region
 
                 threads = []    # 线程队列
