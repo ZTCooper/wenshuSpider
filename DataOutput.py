@@ -12,6 +12,7 @@ LICENSE: MIT
 +---------+--------------+------+-----+---------+-------+
 | docid   | varchar(50)  | NO   | PRI | NULL    |       |
 | status  | int(11)      | NO   |     | 0       |       |
+| region  | varchar(50)  | NO   |     | NULL    |       |
 | title   | varchar(255) | YES  |     | NULL    |       |
 | pubdate | varchar(20)  | YES  |     | NULL    |       |
 | article | text         | YES  |     | NULL    |       |
@@ -31,9 +32,9 @@ class DataOutput(object):
         self.cur = self.conn.cursor()
 
     # 存入docid
-    def insert_docid(self, docid):
+    def insert_docid(self, docid, region):
         try:
-            self.cur.execute('INSERT INTO info (docid) VALUES (%s)', (docid))
+            self.cur.execute('INSERT INTO info (docid, region) VALUES (%s, %s)', (docid, region))
         except Exception as e:
             pass
         self.conn.commit()
@@ -42,11 +43,16 @@ class DataOutput(object):
     def create_table(self):
         if not self.cur.execute("SHOW TABLES LIKE 'Info'"):     # 检查表是否已存在
             self.cur.execute(
-                'CREATE TABLE Info (docid VARCHAR(50) NOT NULL PRIMARY KEY, status INT NOT NULL DEFAULT 0, title VARCHAR(255), pubdate VARCHAR(20), article TEXT);')
+                'CREATE TABLE Info (docid VARCHAR(50) NOT NULL PRIMARY KEY, status INT NOT NULL DEFAULT 0, region VARCHAR(50) NOT NULL, title VARCHAR(255), pubdate VARCHAR(20), article TEXT);')
 
     # 获得数据量
     def get_total(self):
         self.cur.execute('SELECT COUNT(*) FROM info WHERE status = 1')
+        return self.cur.fetchone()[0]
+
+    # 还有未访问成功的链接
+    def has_unvisited(self):
+        self.cur.execute('SELECT COUNT(*) FROM info WHERE status != 1')
         return self.cur.fetchone()[0]
 
     # 修改状态（2:正在访问；1:访问成功且插入正常；0:未访问；-1:访问超时或插入异常；）

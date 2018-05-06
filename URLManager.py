@@ -10,28 +10,34 @@ LICENSE: MIT
 import re
 from GetAPI import GetAPI
 from DataOutput import DataOutput
+import threading
 
 
 class UrlManager(object):
     def __init__(self):
         self.docids = set()
+        self.lock = threading.Lock()      # 线程锁
         
-    def get_DocID(self, Index):
+    def get_DocID(self, Param, Index, Page, Order, Direction):
         p_docid = re.compile(r'"文书ID\\":\\"(.*?)\\"')
-        print("获取url中……")
-        data = GetAPI().get_data(Index)
+        data = GetAPI().get_data(Param, Index, Page, Order, Direction)
         return p_docid.findall(data)
 
-    def store_docids(self, Index, db):
-        docids = self.get_DocID(Index)
+    def store_docids(self, Param, Index, Page, Order, Direction, db):
+        docids = self.get_DocID(Param, Index, Page, Order, Direction)
+        region = Param.split(':')[1]    # 地域
         for docid in docids:
-            db.insert_docid(docid)      # docid存入数据库
+            self.lock.acquire()     # 线程锁
+            db.insert_docid(docid, region)      # docid存入数据库
+            self.lock.release()
             self.docids.add(docid)    # 加入docids变量
 
-    def get_docid(self, db):
+    def get_one_docid(self, db):
         if db.cur.execute('SELECT docid FROM info WHERE status = 0'):   # 未访问id
             docid = db.cur.fetchone()[0]
         elif db.cur.execute('SELECT docid FROM info WHERE status = -1'):    # 异常id
+            docid = db.cur.fetchone()[0]
+        elif db.cur.execute('SELECT docid FROM info WHERE status = 2'):    # 异常id
             docid = db.cur.fetchone()[0]
         if docid:
             db.change_status(docid, 2)      # 更改状态为正在访问

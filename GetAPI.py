@@ -100,11 +100,7 @@ class GetAPI(object):
         vl5x = (ctx2.call('vl5x', vjkl5))
         return vl5x
 
-    def get_data(self, Index):
-        Param = self.s["Param"]
-        Page = self.s["Page"]
-        Order = self.s["Order"]
-        Direction = self.s["Direction"]
+    def get_data(self, Param, Index, Page, Order, Direction):
         guid = self.get_guid()
         number = self.get_number(guid)
         vjkl5 = self.get_vjkl5(guid, number, Param)
