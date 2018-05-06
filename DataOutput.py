@@ -60,7 +60,8 @@ class DataOutput(object):
     def change_status(self, docid, status):
         self.cur.execute(
             'UPDATE info SET status = %d WHERE docid = "%s";' % (status, docid))
-
+        self.conn.commit()
+        
     # 插入数据
     def insert_into_db(self, data, docid):
         self.cur.execute('UPDATE info SET status = 1, region = "%s", title = "%s", pubdate = "%s", article = "%s" WHERE docid = "%s";' % (
@@ -70,7 +71,8 @@ class DataOutput(object):
     # 删除异常数据
     def delete_wrong_ids(self, docid):
         self.cur.execute('DELETE FROM info WHERE docid = "%s";' % docid)
-
+        self.conn.commit()
+        
     # 关闭数据库连接
     def close_cursor(self):
         self.cur.close()
