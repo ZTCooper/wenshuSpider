@@ -34,7 +34,8 @@ class DataOutput(object):
     # 存入docid
     def insert_docid(self, docid, region):
         try:
-            self.cur.execute('INSERT INTO info (docid, region) VALUES (%s, %s)', (docid, region))
+            self.cur.execute(
+                'INSERT INTO info (docid, region) VALUES (%s, %s)', (docid, region))
         except Exception as e:
             pass
         self.conn.commit()
@@ -58,13 +59,17 @@ class DataOutput(object):
     # 修改状态（2:正在访问；1:访问成功且插入正常；0:未访问；-1:访问超时或插入异常；）
     def change_status(self, docid, status):
         self.cur.execute(
-                'UPDATE info SET status = %d WHERE docid = "%s";' % (status, docid))
+            'UPDATE info SET status = %d WHERE docid = "%s";' % (status, docid))
 
     # 插入数据
     def insert_into_db(self, data, docid):
         self.cur.execute('UPDATE info SET status = 1, region = "%s", title = "%s", pubdate = "%s", article = "%s" WHERE docid = "%s";' % (
             data['region'], data['title'][0], data['pubdate'][0], data['article'], docid))
         self.conn.commit()
+
+    # 删除异常数据
+    def delete_wrong_ids(self, docid):
+        self.cur.execute('DELETE FROM info WHERE docid = "%s";' % docid)
 
     # 关闭数据库连接
     def close_cursor(self):

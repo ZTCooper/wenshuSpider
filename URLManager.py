@@ -17,20 +17,27 @@ class UrlManager(object):
     def __init__(self):
         self.docids = set()
         self.lock = threading.Lock()      # 线程锁
-        
+
+    # 从日志文件中读取出现过问题的id
+    def get_wrong_ids(self):
+        with open('wrong_id.log') as f:
+            return f.read().split('\n')
+
     def get_DocID(self, Param, Index, Page, Order, Direction):
         p_docid = re.compile(r'"文书ID\\":\\"(.*?)\\"')
         data = GetAPI().get_data(Param, Index, Page, Order, Direction)
         return p_docid.findall(data)
 
     def store_docids(self, Param, Index, Page, Order, Direction, db):
+        wrong_ids = self.get_wrong_ids()
         docids = self.get_DocID(Param, Index, Page, Order, Direction)
         region = Param.split(':')[1]    # 地域
         for docid in docids:
-            self.lock.acquire()     # 线程锁
-            db.insert_docid(docid, region)      # docid存入数据库
-            self.lock.release()
-            self.docids.add(docid)    # 加入docids变量
+            if docid not in wrong_ids:
+                self.lock.acquire()     # 线程锁
+                db.insert_docid(docid, region)      # docid存入数据库
+                self.lock.release()
+                self.docids.add(docid)    # 加入docids变量
 
     def get_one_docid(self, db):
         if db.cur.execute('SELECT docid FROM info WHERE status = 0'):   # 未访问id

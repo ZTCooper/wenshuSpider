@@ -33,13 +33,20 @@ def crawl():
     while db.has_unvisited():
         docid = manager.get_one_docid(db)
         url = base_url + docid
-        try:
-            html = downloader.download(url)
-            data = parser.parse(html)
-            db.insert_into_db(data, docid)        # 插入数据库
-        except Exception as e:
-            # print(e)
-            db.change_status(docid, -1)
+        for _ in range(3):
+            try:
+                html = downloader.download(url)
+                data = parser.parse(html)
+                db.insert_into_db(data, docid)        # 插入数据库
+            except Exception as e:
+                # print(e)
+                continue    # 若抛出异常，连续访问三次
+            else:
+                break       # 没有抛出异常，只访问一次
+        else:       # forloop没有被break中断，即三次访问失败
+            with open('wrong_id.log', 'a') as f:
+                f.write(docid + '\n')     # 写入错误日志
+            db.delete_wrong_ids(docid)      # 从数据库中删除
         time.sleep(random())
     new_total = db.get_total()
     db.close_cursor()   # 关闭数据库
@@ -72,6 +79,7 @@ def store_ids():
                         Index += 1
     db.close_cursor()   # 关闭数据库
 
+
 # 获取今日新增
 def today_new():
     db = DataOutput()       # 连接到数据库
@@ -99,7 +107,6 @@ def today_new():
             time.sleep(random())
             Index += 1
     db.close_cursor()   # 关闭数据库
-
 
 
 if __name__ == '__main__':

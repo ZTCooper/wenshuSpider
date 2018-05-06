@@ -20,11 +20,12 @@ class HtmlDownloader(object):
     def download(self, url):
         headers = {
             'User-Agent': choice(self.u),
+            'Connection': 'close',
         }
         try:
             r = requests.get(url, headers=headers, timeout=10)
             if r.status_code == 200:    # 访问正常
                 return r.text
-        except ReadTimeoutError:
+        except requests.exceptions.ConnectTimeout:      # 超时
             raise TimeoutError
         return None
