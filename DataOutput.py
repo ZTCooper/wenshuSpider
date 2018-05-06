@@ -62,8 +62,8 @@ class DataOutput(object):
 
     # 插入数据
     def insert_into_db(self, data, docid):
-        self.cur.execute('UPDATE info SET status = 1, title = "%s", pubdate = "%s", article = "%s" WHERE docid = "%s";' % (
-            data['title'][0], data['pubdate'][0], data['article'], docid))
+        self.cur.execute('UPDATE info SET status = 1, region = "%s", title = "%s", pubdate = "%s", article = "%s" WHERE docid = "%s";' % (
+            data['region'], data['title'][0], data['pubdate'][0], data['article'], docid))
         self.conn.commit()
 
     # 关闭数据库连接

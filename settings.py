@@ -40,6 +40,7 @@ class Settings(object):
             "当事人": "DSR",
             "律师": "LAWYER",
             "法院地域": "FYDY",
+            "上传日期": "SCRQ"
         }
 
         self.user_agents = [

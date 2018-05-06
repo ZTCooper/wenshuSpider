@@ -43,7 +43,7 @@
 * [HTMLDownloader.py](https://github.com/ZTCooper/wenshuSpider/blob/master/HTMLDownloader.py)（网页下载器） <br>
 * [HTMLParser.py](https://github.com/ZTCooper/wenshuSpider/blob/master/HTMLParser.py)（HTML解析器）：  		解析JSON数据和HTML，提取需要字段（标题，日期，正文） <br>
 * [DataOutput.py](https://github.com/ZTCooper/wenshuSpider/blob/master/DataOutput.py)（数据存储器）：存入MySQL <br>
-* [SpiderMan.py](https://github.com/ZTCooper/wenshuSpider/blob/master/SpiderMan.py)（爬虫调度器）：	爬虫入口，首先执行store_id()将需要爬取的文书id存入，然后执行crawl()，从数据库中取出未访问或访问异常的docid构造url（正文页采用了Ajax） <br><br>
+* [SpiderMan.py](https://github.com/ZTCooper/wenshuSpider/blob/master/SpiderMan.py)（爬虫调度器）：	爬虫入口，首先执行**store_id()**将需要爬取的文书id存入（**若爬取今日新增则执行today_new()**），然后执行**crawl()**，从数据库中取出未访问或访问异常的docid构造url（正文页采用了Ajax） <br><br>
 由于目前每个搜索条件下仅能深入到100页，所以循环遍历搜索条件可得到尽量多的数据，这样每个地域可得到不超过12000篇文书，共32个地域
 ```python
 Page = s["Page"]	# 每页20条
@@ -69,7 +69,8 @@ Update Log
 ##### 05/06/2018
 * 列表页接口访问改用多线程
 * 数据表新增status（存储访问状态）和region字段，改为从数据库中提取未访问或异常状态的docid构造url
-* 可按地域遍历爬取  
+* 可按地域遍历爬取
+* 新增爬取“今日新增”文书  
 
 ##### 05/01/2018
 * 增加 User-Agent pool  

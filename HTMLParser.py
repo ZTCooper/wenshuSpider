@@ -19,9 +19,15 @@ class HtmlParser(object):
         p_title = re.compile(r'"Title\\":\\"(.*?)\\"')
         p_pubdate = re.compile(r'"PubDate\\":\\"(.*?)\\"')
         p_html = re.compile(r'"Html\\":\\"(.*?)\\"')
+        p_province = re.compile(r'"法院省份":"(.*?)"')
+        p_city = re.compile(r'"法院地市":"(.*?)"')
+        p_area1 = re.compile(r'"法院区县":"(.*?)"')
+        p_area2 = re.compile(r'"法院区域":"(.*?)"')
 
         self.item['title'] = p_title.findall(source)        # 标题
         self.item['pubdate'] = p_pubdate.findall(source)        # 发布时间
+        self.item['region'] = p_province.findall(source)[0] + " " + p_city.findall(
+            source)[0] + " " + (p_area1.findall(source)[0] or p_area2.findall(source)[0])    # 地区
         html = p_html.findall(source)[0]
         # 提取正文
         soup = BeautifulSoup(html, 'lxml')

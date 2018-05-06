@@ -13,6 +13,7 @@ from DataOutput import DataOutput
 from settings import Settings
 from random import random
 import time
+import datetime
 import threading
 import multiprocessing
 
@@ -20,16 +21,14 @@ import multiprocessing
 manager = UrlManager()
 downloader = HtmlDownloader()
 parser = HtmlParser()
-db = DataOutput()  # 实例化时连接到数据库
-db.create_table()      # 创建表
 s = Settings().setting
-old_total = db.get_total()
 max_threads = 3
 base_url = "http://wenshu.court.gov.cn/CreateContentJS/CreateContentJS.aspx?DocID="
 
 
 # 逐条爬取
 def crawl():
+    db = DataOutput()   # 连接到数据库
     old_total = db.get_total()
     while db.has_unvisited():
         docid = manager.get_one_docid(db)
@@ -38,16 +37,19 @@ def crawl():
             html = downloader.download(url)
             data = parser.parse(html)
             db.insert_into_db(data, docid)        # 插入数据库
-        except Exception:
+        except Exception as e:
+            # print(e)
             db.change_status(docid, -1)
         time.sleep(random())
     new_total = db.get_total()
-    db.close_cursor()
+    db.close_cursor()   # 关闭数据库
     print('新增', new_total - old_total, '条')
 
 
 # 将需要爬取的docid存入数据库
 def store_ids():
+    db = DataOutput()   # 连接到数据库
+    db.create_table()      # 创建表
     Page = s["Page"]    # 每页20条
     for region in s["regions"]:     # 每个地域
         for Order in s["Order"]:    # 排序标准
@@ -68,10 +70,40 @@ def store_ids():
                         threads.append(thread)  # 加入线程队列
                         time.sleep(random())
                         Index += 1
+    db.close_cursor()   # 关闭数据库
+
+# 获取今日新增
+def today_new():
+    db = DataOutput()       # 连接到数据库
+    db.create_table()      # 创建表
+    today = datetime.date.today()
+    tomorrow = today + datetime.timedelta(days=1)
+    today = today.strftime('%Y-%m-%d')
+    tomorrow = tomorrow.strftime('%Y-%m-%d')
+    Param = "上传日期:" + today + " TO " + tomorrow
+    Page = s["Page"]
+    Order = "法院层级"
+    Direction = "desc"
+    threads = []    # 线程队列
+    Index = s["Index"][0]
+    while threads or Index <= s["Index"][1]:
+        for thread in threads:
+            if not thread.is_alive():   # 线程不可用
+                threads.remove(thread)  # 从线程队列中删掉
+        while len(threads) < max_threads and Index <= s["Index"][1]:
+            thread = threading.Thread(
+                target=manager.store_docids, args=(Param, Index, Page, Order, Direction, db, ))    # 创建线程
+            thread.setDaemon(True)  # 设置守护线程
+            thread.start()  # 启动线程
+            threads.append(thread)  # 加入线程队列
+            time.sleep(random())
+            Index += 1
+    db.close_cursor()   # 关闭数据库
+
 
 
 if __name__ == '__main__':
     print('获取url……')
-    store_ids()
+    today_new()
     print('开始爬取……')
     crawl()
