@@ -1,6 +1,6 @@
 # encoding:utf-8
 '''
-author: ztcooper
+author: ztcooper(github)
 contact: 1060214139@qq.com
 LICENSE: MIT
 

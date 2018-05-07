@@ -1,6 +1,6 @@
 # encoding:utf-8
 '''
-author: ztcooper
+author: ztcooper(github)
 contact: 1060214139@qq.com
 LICENSE: MIT
 
@@ -14,7 +14,7 @@ class Settings(object):
             "Param": "法院地域:",  # 按地域爬取
             "Index": [1, 100],  # 爬取页数
             "Page": 20,  # 每页几条
-            "Order": ["裁判日期", "裁判日期", "审判程序"],  # 排序标准
+            "Order": ["法院层级", "裁判日期", "审判程序"],  # 排序标准
             "Direction": ["desc", "asc"],  # asc正序 desc倒序
             "regions": ["北京市", "天津市", "河北省", "山西省", "内蒙古自治区",
                          "辽宁省", "吉林省", "黑龙江省", "上海市", "江苏省",

@@ -1,6 +1,6 @@
 # encoding:utf-8
 '''
-author: ztcooper
+author: ztcooper(github)
 contact: 1060214139@qq.com
 LICENSE: MIT
 
@@ -15,13 +15,8 @@ import threading
 
 class UrlManager(object):
     def __init__(self):
-        self.docids = set()
+        # self.docids = set()
         self.lock = threading.Lock()      # 线程锁
-
-    # 从日志文件中读取出现过问题的id
-    def get_wrong_ids(self):
-        with open('wrong_id.log') as f:
-            return f.read().split('\n')
 
     def get_DocID(self, Param, Index, Page, Order, Direction):
         p_docid = re.compile(r'"文书ID\\":\\"(.*?)\\"')
@@ -29,15 +24,13 @@ class UrlManager(object):
         return p_docid.findall(data)
 
     def store_docids(self, Param, Index, Page, Order, Direction, db):
-        wrong_ids = self.get_wrong_ids()
         docids = self.get_DocID(Param, Index, Page, Order, Direction)
         region = Param.split(':')[1]    # 地域
+        self.lock.acquire()     # 线程锁
         for docid in docids:
-            if docid not in wrong_ids:
-                self.lock.acquire()     # 线程锁
+            if not db.in_error_list(docid):  # 不在异常队列中
                 db.insert_docid(docid, region)      # docid存入数据库
-                self.lock.release()
-                self.docids.add(docid)    # 加入docids变量
+        self.lock.release()
 
     def get_one_docid(self, db):
         if db.cur.execute('SELECT docid FROM info WHERE status = 0'):   # 未访问id
@@ -51,7 +44,9 @@ class UrlManager(object):
             return docid
         return None
 
+    '''
     def get_urls(self):
         docids = self.docids.copy()     # 浅拷贝
         self.docids.clear()   # 每次urls中只存放一个列表页的url，减少开销
         return docids
+    '''

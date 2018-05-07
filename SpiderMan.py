@@ -1,6 +1,6 @@
 # encoding:utf-8
 '''
-author: ztcooper
+author: ztcooper(github)
 contact: 1060214139@qq.com
 LICENSE: MIT
 
@@ -40,13 +40,13 @@ def crawl():
                 db.insert_into_db(data, docid)        # 插入数据库
             except Exception as e:
                 # print(e)
+                error = e
                 continue    # 若抛出异常，连续访问三次
             else:
                 break       # 没有抛出异常，只访问一次
         else:       # forloop没有被break中断，即三次访问失败
-            with open('wrong_id.log', 'a') as f:
-                f.write(docid + '\n')     # 写入错误日志
-            db.delete_wrong_ids(docid)      # 从数据库中删除
+            db.write_errors(docid, error)     # 写入错误日志
+            db.delete_wrong_ids(docid)      # 从数据表中删除
         time.sleep(random())
     new_total = db.get_total()
     db.close_cursor()   # 关闭数据库
@@ -84,28 +84,30 @@ def store_ids():
 def today_new():
     db = DataOutput()       # 连接到数据库
     db.create_table()      # 创建表
+
     today = datetime.date.today()
     tomorrow = today + datetime.timedelta(days=1)
     today = today.strftime('%Y-%m-%d')
     tomorrow = tomorrow.strftime('%Y-%m-%d')
-    Param = "上传日期:" + today + " TO " + tomorrow
+
     Page = s["Page"]
-    Order = "法院层级"
-    Direction = "desc"
-    threads = []    # 线程队列
-    Index = s["Index"][0]
-    while threads or Index <= s["Index"][1]:
-        for thread in threads:
-            if not thread.is_alive():   # 线程不可用
-                threads.remove(thread)  # 从线程队列中删掉
-        while len(threads) < max_threads and Index <= s["Index"][1]:
-            thread = threading.Thread(
-                target=manager.store_docids, args=(Param, Index, Page, Order, Direction, db, ))    # 创建线程
-            thread.setDaemon(True)  # 设置守护线程
-            thread.start()  # 启动线程
-            threads.append(thread)  # 加入线程队列
-            time.sleep(random())
-            Index += 1
+    Param = "上传日期:" + today + " TO " + tomorrow
+    for Order in s["Order"]:    # 排序标准
+        for Direction in s["Direction"]:    # 升降序各深入100页
+            threads = []    # 线程队列
+            Index = s["Index"][0]
+            while threads or Index <= s["Index"][1]:
+                for thread in threads:
+                    if not thread.is_alive():   # 线程不可用
+                        threads.remove(thread)  # 从线程队列中删掉
+                while len(threads) < max_threads and Index <= s["Index"][1]:
+                    thread = threading.Thread(
+                        target=manager.store_docids, args=(Param, Index, Page, Order, Direction, db, ))    # 创建线程
+                    thread.setDaemon(True)  # 设置守护线程
+                    thread.start()  # 启动线程
+                    threads.append(thread)  # 加入线程队列
+                    time.sleep(random())
+                    Index += 1
     db.close_cursor()   # 关闭数据库
 
 

@@ -1,6 +1,6 @@
 # encoding:utf-8
 '''
-author: ztcooper
+author: ztcooper(github)
 contact: 1060214139@qq.com
 LICENSE: MIT
 
@@ -20,7 +20,7 @@ class HtmlDownloader(object):
     def download(self, url):
         headers = {
             'User-Agent': choice(self.u),
-            'Connection': 'close',
+            'Connection': 'close',      # 避免TCP连接超时
         }
         try:
             r = requests.get(url, headers=headers, timeout=10)

@@ -7,7 +7,8 @@ contact: 2557692481@qq.com
 
 modified: ztcooper
 2018-04-24
-cotact: 1060214139@qq.com
+contact: 1060214139@qq.com
+github: ztcooper
 
 获得API数据
 '''

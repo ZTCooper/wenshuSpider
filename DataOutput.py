@@ -1,6 +1,6 @@
 # encoding:utf-8
 '''
-author: ztcooper
+author: ztcooper(github)
 contact: 1060214139@qq.com
 LICENSE: MIT
 
@@ -37,14 +37,18 @@ class DataOutput(object):
             self.cur.execute(
                 'INSERT INTO info (docid, region) VALUES (%s, %s)', (docid, region))
         except Exception as e:
+            # print(e)
             pass
         self.conn.commit()
 
     # 创建表
     def create_table(self):
-        if not self.cur.execute("SHOW TABLES LIKE 'Info'"):     # 检查表是否已存在
+        if not self.cur.execute("SHOW TABLES LIKE 'info'"):     # 检查表是否已存在
             self.cur.execute(
                 'CREATE TABLE Info (docid VARCHAR(50) NOT NULL PRIMARY KEY, status INT NOT NULL DEFAULT 0, region VARCHAR(50) NOT NULL, title VARCHAR(255), pubdate VARCHAR(20), article TEXT);')
+        if not self.cur.execute("SHOW TABLES LIKE 'log'"):
+            self.cur.execute(
+                'CREATE TABLE Log (docid VARCHAR(50) NOT NULL PRIMARY KEY, error VARCHAR(255));')
 
     # 获得数据量
     def get_total(self):
@@ -61,18 +65,31 @@ class DataOutput(object):
         self.cur.execute(
             'UPDATE info SET status = %d WHERE docid = "%s";' % (status, docid))
         self.conn.commit()
-        
+
     # 插入数据
     def insert_into_db(self, data, docid):
         self.cur.execute('UPDATE info SET status = 1, region = "%s", title = "%s", pubdate = "%s", article = "%s" WHERE docid = "%s";' % (
             data['region'], data['title'][0], data['pubdate'][0], data['article'], docid))
         self.conn.commit()
 
+    # 将异常id和错误讯息写入log
+    def write_errors(self, docid, error):
+        try:
+            self.cur.execute('INSERT INTO log (docid, error) VALUES (%s, %s)', (docid, error))
+        except Exception as e:
+            pass
+        self.conn.commit()
+
+    # 查看是否在异常列表中
+    def in_error_list(self, id):  
+        self.cur.execute('SELECT COUNT(*) FROM log WHERE docid = "%s"' % id)
+        return self.cur.fetchone()[0] 
+
     # 删除异常数据
     def delete_wrong_ids(self, docid):
         self.cur.execute('DELETE FROM info WHERE docid = "%s";' % docid)
         self.conn.commit()
-        
+
     # 关闭数据库连接
     def close_cursor(self):
         self.cur.close()
